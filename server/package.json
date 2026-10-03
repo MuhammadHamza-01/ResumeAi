@@ -1,0 +1,21 @@
+{
+  "name": "resume-ai-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ResumeAI backend API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "mongoose": "^9.10.4"
+  }
+}
