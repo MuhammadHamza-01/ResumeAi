@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import { errorHandler } from "./middleware/error.middleware.js";
+import authRoutes from "./routes/auth.routes.js";
 
 dotenv.config();
 
@@ -35,6 +36,15 @@ app.get("/api/health", (req, res) => {
       service: "resume-ai-server",
       timestamp: new Date().toISOString(),
     },
+  });
+});
+
+app.use("/api/auth", authRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
   });
 });
 

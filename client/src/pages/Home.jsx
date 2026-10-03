@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FileSearch, Sparkles } from "lucide-react";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const features = [
   "AI Resume Analysis",
@@ -13,6 +14,7 @@ const features = [
 ];
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
   const [apiStatus, setApiStatus] = useState("checking");
 
   useEffect(() => {
