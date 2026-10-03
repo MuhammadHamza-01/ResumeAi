@@ -40,7 +40,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-2 font-semibold text-slate-800">
             <Sparkles className="h-6 w-6 text-indigo-600" />
-            ResumeAI
+            ResumeAI by Hamza
           </div>
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
