@@ -12,7 +12,7 @@ import {
 } from "../validations/auth.validation.js";
 
 const router = express.Router();
-
+router.get("/health", (req, res) => res.json({ status: "ok" }));
 router.post("/register", validateRegister, register);
 router.post("/login", validateLogin, login);
 router.get("/profile", authMiddleware, getProfile);
