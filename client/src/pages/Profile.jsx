@@ -12,12 +12,19 @@ export default function Profile() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name: user?.name || "",
+      name: "",
     },
   });
+
+  useEffect(() => {
+    if (user?.name) {
+      reset({ name: user.name });
+    }
+  }, [user, reset]);
 
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString(undefined, {

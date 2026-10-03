@@ -11,7 +11,7 @@ export default function Dashboard() {
       <div>
         <h1 className="text-3xl font-bold text-slate-900">
           Welcome back, {user?.name}
-        </h1>
+        </h1> 
         <p className="mt-2 text-slate-600">
           Your dashboard stats will appear here in a later phase. For now, use
           the quick actions below.
