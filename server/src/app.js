@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
+import resumeRoutes from "./routes/resume.routes.js";
+import analysisRoutes from "./routes/analysis.routes.js";
 
 dotenv.config();
 
@@ -27,6 +29,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
 
 app.get("/api/health", (req, res) => {
   res.json({
@@ -40,6 +43,8 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/resumes", resumeRoutes);
+app.use("/api/analyses", analysisRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

@@ -7,6 +7,16 @@ export const errorHandler = (err, req, res, next) => {
     message = "Email is already registered";
   }
 
+  if (err.code === "LIMIT_FILE_SIZE") {
+    statusCode = 400;
+    message = "File is too large. Maximum size is 5MB";
+  }
+
+  if (err.name === "CastError") {
+    statusCode = 400;
+    message = "Invalid resource identifier";
+  }
+
   if (statusCode === 500 && process.env.NODE_ENV === "production") {
     message = "Something went wrong";
   }
