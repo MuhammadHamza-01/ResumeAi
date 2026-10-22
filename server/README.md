@@ -7,6 +7,16 @@ Express REST API for ResumeAI.
 - `npm run dev` — start with Node watch mode
 - `npm start` — production start
 
+## Required environment variables
+
+Copy `.env.example` to `.env` and set the MongoDB, JWT, and Cloudinary credentials.
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
+Resume uploads accept PDF, DOC, and DOCX files up to 5MB. Files are uploaded to Cloudinary as raw resources and are not stored in the server's local `uploads` directory.
+
 ## API
 
 ### Health

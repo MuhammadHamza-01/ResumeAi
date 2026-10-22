@@ -1,11 +1,13 @@
 import fs from "fs/promises";
+import os from "os";
 import path from "path";
 import Resume from "../models/Resume.js";
+import { deleteResumeFromCloudinary } from "../middleware/upload.middleware.js";
 import { ApiError } from "../utils/apiError.js";
 
 const formatBytesToMb = (bytes) => Number((bytes / (1024 * 1024)).toFixed(2));
 
-const formatResume = (resume, req) => ({
+const formatResume = (resume) => ({
   id: resume._id.toString(),
   title: resume.title,
   originalName: resume.originalName,
@@ -14,25 +16,28 @@ const formatResume = (resume, req) => ({
   size: resume.size,
   sizeInMb: formatBytesToMb(resume.size),
   targetRole: resume.targetRole,
-  fileUrl: `${req.protocol}://${req.get("host")}/uploads/resumes/${resume.filename}`,
+  fileUrl: resume.fileUrl,
   createdAt: resume.createdAt,
   updatedAt: resume.updatedAt,
 });
 
 export const uploadResume = async (req, res, next) => {
   try {
-    if (!req.file) {
-      throw new ApiError("Resume file is required", 400);
+    if (!req.file?.cloudinary) {
+      throw new ApiError("Resume upload failed", 502);
     }
 
     const title = req.body.title?.trim() || req.file.originalname;
     const targetRole = req.body.targetRole?.trim() || "";
+    const { publicId, secureUrl } = req.file.cloudinary;
 
     const resume = await Resume.create({
       user: req.user.id,
       title,
       originalName: req.file.originalname,
-      filename: req.file.filename,
+      filename: publicId,
+      fileUrl: secureUrl,
+      cloudinaryPublicId: publicId,
       mimeType: req.file.mimetype,
       size: req.file.size,
       targetRole,
@@ -41,7 +46,7 @@ export const uploadResume = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Resume uploaded successfully",
-      data: formatResume(resume, req),
+      data: formatResume(resume),
     });
   } catch (error) {
     next(error);
@@ -55,7 +60,7 @@ export const getMyResumes = async (req, res, next) => {
     res.json({
       success: true,
       message: "Resumes fetched successfully",
-      data: resumes.map((resume) => formatResume(resume, req)),
+      data: resumes.map(formatResume),
     });
   } catch (error) {
     next(error);
@@ -73,7 +78,7 @@ export const getResumeById = async (req, res, next) => {
     res.json({
       success: true,
       message: "Resume fetched successfully",
-      data: formatResume(resume, req),
+      data: formatResume(resume),
     });
   } catch (error) {
     next(error);
@@ -88,18 +93,8 @@ export const deleteResume = async (req, res, next) => {
       throw new ApiError("Resume not found", 404);
     }
 
+    await deleteResumeFromCloudinary(resume.cloudinaryPublicId || resume.filename);
     await Resume.deleteOne({ _id: resume._id });
-
-    const absoluteFilePath = path.resolve(
-      process.cwd(),
-      "uploads",
-      "resumes",
-      resume.filename
-    );
-
-    await fs.unlink(absoluteFilePath).catch(() => {
-      // Ignore missing files so users can still clean database records.
-    });
 
     res.json({
       success: true,

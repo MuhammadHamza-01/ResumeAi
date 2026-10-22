@@ -23,6 +23,14 @@ const resumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    fileUrl: {
+      type: String,
+      required: true,
+    },
+    cloudinaryPublicId: {
+      type: String,
+      required: true,
+    },
     mimeType: {
       type: String,
       required: true,
